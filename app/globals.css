@@ -3,6 +3,15 @@ body {
   padding: 0;
 }
 
+#no-token {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 18px;
+  color: #666;
+}
+
 #map {
   position: absolute;
   top: 0;
