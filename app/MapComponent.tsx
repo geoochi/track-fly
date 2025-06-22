@@ -1,18 +1,28 @@
-import { useRef, useEffect } from 'react'
+'use client'
+import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { along, length, lineString } from '@turf/turf'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import './App.css'
+import './globals.css'
 import cameraJson from './data/camera.json'
 import targetJson from './data/target.json'
 import trackJson from './data/track.json'
 
-const App: React.FC = () => {
-  const mapRef = useRef(null)
+interface MapComponentProps {
+  mapboxToken: string
+}
+
+const MapComponent: React.FC<MapComponentProps> = ({ mapboxToken }) => {
+  const mapRef = useRef<mapboxgl.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN
+    if (!mapContainerRef.current) return
+
+    // 直接使用从服务端传递的 token
+    mapboxgl.accessToken = mapboxToken
+
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       zoom: 18,
@@ -20,14 +30,16 @@ const App: React.FC = () => {
       style: 'mapbox://styles/anhmw2351/cligvilm4008e01r02c6o1nw3',
       interactive: false,
     })
+
     const geojson = {
-      type: 'FeatureCollection',
+      type: 'FeatureCollection' as const,
       features: [
         {
-          type: 'Feature',
+          type: 'Feature' as const,
+          properties: {},
           geometry: {
-            type: 'LineString',
-            coordinates: [],
+            type: 'LineString' as const,
+            coordinates: [] as [number, number][],
           },
         },
       ],
@@ -37,6 +49,8 @@ const App: React.FC = () => {
     const trackRoute = trackJson['features'][0]['geometry']['coordinates']
 
     mapRef.current.on('load', () => {
+      if (!mapRef.current) return
+
       mapRef.current.addSource('line', {
         type: 'geojson',
         data: geojson,
@@ -63,9 +77,9 @@ const App: React.FC = () => {
       const targetDistance = length(lineString(targetRoute))
       const cameraDistance = length(lineString(cameraRoute))
 
-      let start
-      function frame(time) {
-        let count
+      let start: number | undefined
+      function frame(time: number) {
+        let count: number
         if (!start) start = time
         const phase = (time - start) / animationDuration
 
@@ -83,7 +97,13 @@ const App: React.FC = () => {
           alongTrack[0],
           alongTrack[1],
         ])
-        mapRef.current.getSource('line').setData(geojson)
+        if (!mapRef.current) return
+        const source = mapRef.current.getSource(
+          'line'
+        ) as mapboxgl.GeoJSONSource
+        if (source) {
+          source.setData(geojson)
+        }
 
         const alongTarget = along(
           lineString(targetRoute),
@@ -112,21 +132,33 @@ const App: React.FC = () => {
       window.requestAnimationFrame(frame)
     })
 
+    setIsLoading(false)
+
     return () => {
-      mapRef.current.remove()
+      if (mapRef.current) {
+        mapRef.current.remove()
+      }
     }
-  }, [])
+  }, [mapboxToken])
 
   return (
     <div>
-      <div id='logo'>
-        <a href='https://github.com/geoochi/track_fly' target='_blank'>
-          <img src='/github.svg' />
-        </a>
-      </div>
+      {isLoading && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1000,
+          }}
+        >
+          Loading map...
+        </div>
+      )}
       <div id='map' ref={mapContainerRef} />
     </div>
   )
 }
 
-export default App
+export default MapComponent
