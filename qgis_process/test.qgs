@@ -3170,7 +3170,7 @@ control = dialog.findChild(QWidget, "MyLineEdit")
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings destinationLayer="camera_f467d0d2_3715_42c2_85ca_035f85ea2eb6" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerSource="/Users/szchixy/projects/web/track_fly/data/camera.geojson" autoCommitFeatures="0" destinationLayerProvider="ogr" destinationLayerName="camera">
+  <ProjectGpsSettings destinationLayer="camera_f467d0d2_3715_42c2_85ca_035f85ea2eb6" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerSource="/Users/szchixy/projects/web/track-fly/app/data/camera.geojson" autoCommitFeatures="0" destinationLayerProvider="ogr" destinationLayerName="camera">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

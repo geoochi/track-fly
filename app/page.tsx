@@ -10,7 +10,7 @@ export default function Page() {
         <div>
           <a
             id='logo'
-            href='https://github.com/geoochi/track_fly'
+            href='https://github.com/geoochi/track-fly'
             target='_blank'
           >
             <img src='/github.svg' />

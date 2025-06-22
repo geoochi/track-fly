@@ -18,10 +18,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ mapboxToken }) => {
 
   useEffect(() => {
     if (!mapContainerRef.current) return
-
-    // 直接使用从服务端传递的 token
     mapboxgl.accessToken = mapboxToken
-
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
       zoom: 18,
