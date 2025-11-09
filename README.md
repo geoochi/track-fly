@@ -4,7 +4,7 @@ This is a track flying animation made by mapbox api.
 
 You can see a camera flies follow a track smoothly in Shenzhen
 
-See the [Track Flying Animation](https://geoochi.github.io/track-fly)
+See demo 👉 [Track Flying Animation](https://geoochi.github.io/track-fly)
 
 Referenced apis are here:
 
